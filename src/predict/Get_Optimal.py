@@ -2,6 +2,9 @@
 Created on Nov 2, 2016
 
 @author: abhijit.tomar
+
+Module for optimizing a classifier, 'clf' based on the 'tuned_parameters' 
+and best suited for scoring criteria passed in 'scores'
 '''
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
@@ -12,14 +15,14 @@ def generate_optimal(X, y, clf, tuned_parameters, scores):
     
     # Split the dataset in two equal parts
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.7, random_state=0)
+        X, y, test_size=0.3, random_state=0)
     
     for score in scores:
         print("# Tuning hyper-parameters for %s" % score)
         print()
     
         model = GridSearchCV(clf, tuned_parameters, cv=5,
-                           scoring='%s' % score, verbose=100000000)
+                           scoring='%s' % score, verbose=100)
         model.fit(X_train, y_train)
     
         print("Best parameters set found on development set:")

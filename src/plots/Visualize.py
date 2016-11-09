@@ -2,6 +2,8 @@
 Created on Nov 2, 2016
 
 @author: abhijit.tomar
+
+Script to visualize what the data looks like
 '''
 import matplotlib.pyplot as plt
 import numpy as np
