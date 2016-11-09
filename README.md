@@ -51,6 +51,53 @@ This has four modules
 3. `Ensemble` :-> Predict using `VotingClassifier` that combines the other two classifiers
 4. `Get_Optimal` :-> Helper module for generating the optimal set of parameters for a classifier using `GridSearchCV`
 
+###Approach
+
+Lets take a look at the data we are dealing with
+
+Run the `Visualize.py` module in the `plots` package, and we see
+
+![Numbers](resources/data/numbers.png)
+
+Each little square has 768 pixels in total. If we look at the `train.csv`, a row looks like
+
+
+	label	|	pixel0	|	pixel1	|	pixel2	|	pixel3	|	pixel4	|...	pixel768
+
+	1    	|	0   	|	0     	|	0     	|	0     	|	0   	|...	0 
+
+**Key Idea**
+
+Think of each pixel as a `feature` for a classifier. So when we are training our classifier, we want to train
+on how many and which of the pixels are turned on or off.  
+
+With this knowledge, we are in a good position to pick the classifier we want to use. In my opinion, this problem space is ideal for 
+
+1. `RandomForestClassifier` as here, we would be building one decision tree per pixel.
+2. `KNeighborsClassifier` as clusters can be formed by looking at, well, clusters of pixels, that are
+simultaneously turned on or off for a given label.
+
+### Flow
+
+The common steps for prediction are 
+
+1. Read `train.csv` and `test.csv` using `pandas` and create train-test splits
+2. Initialize the classifier
+3. Initialize set of hyper-parameters. These would be used by GridSearch to derive optimal set of hyper-parameters
+4. Initialize scoring metric for this problem space, which would be `accuracy`
+5. Generate optimal set of hyper-parameters for the above classifier using `Get_Optimal` module which uses `GridSearchCV`
+6. Reinitialize the classifier but now with the optimal hyper-parameters
+7. Train the classifier
+8. Predict on the test data
+
+and specifically
+
+1. Run `Predict_KNN` for predicting using `KNeighborsClassifier`
+2. Run `Predict_RForest` for predicting using `RandomForestClassifier`
+3. Run `Ensemble` for predicting using `VotingClassifier` that combines the other two classifiers
+
+Please follow the well documented code.  
+
 ### Results 
 
 1. `RandomForestClassifier` with {"warm_start": true, "n_estimators": 150, "verbose": 100, "oob_score": false, "bootstrap": true} gets **0.96500**
